@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মুক্ত ডায়েরি</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .headline {
+            margin-bottom: 5px;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ff4444;
+            text-align: center;
+        }
+
+        .subheadline {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #ccc;
+            text-align: center;
+        }
+
+        .flowchart {
+            position: relative;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flashcard {
+            background-color: #1c1c1c;
+            border: 2px solid #ff4444;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 68, 68, 0.3);
+            margin: 30px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 1s ease-in-out;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .flashcard:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(255, 68, 68, 0.5);
+        }
+
+        .flashcard h2 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #ff4444;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1c1c1c;
+            border: 2px solid #ff4444;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(255, 68, 68, 0.3);
+            animation: fadeIn 0.5s ease-in-out;
+            color: #fff;
+        }
+
+        .close {
+            color: #ff4444;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .path {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .line {
+            fill: none;
+            stroke: #ff4444; /* Blood red color */
+            stroke-width: 4;
+            stroke-dasharray: 4;
+            animation: dash 5s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -1000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="headline">মুক্ত ডায়েরি</div>
+    <div class="subheadline">August 3, 2024</div>
+    <div class="flowchart">
+        <div class="path">
+            <svg width="300" height="700">
+                <path class="line" d="M150,50 Q150,100 100,150 Q50,200 100,250 Q150,300 100,350 Q50,400 100,450 Q150,500 100,550 Q50,600 150,650" />
+            </svg>
+        </div>
+        <div class="flashcard" id="time1">
+            <h2>4 PM</h2>
+        </div>
+        <div class="flashcard" id="time2">
+            <h2>10 AM</h2>
+        </div>
+        <div class="flashcard" id="time3">
+            <h2>1 PM</h2>
+        </div>
+        <div class="flashcard" id="time4">
+            <h2>7 PM</h2>
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-content"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashcards = document.querySelectorAll('.flashcard');
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            const closeBtn = document.getElementsByClassName('close')[0];
+
+            const details = {
+                time1: 'সরকার পদত্যাগের এক দফা দাবি ঘোষণা করেছে বৈষম্যবিরোধী ছাত্র আন্দোলন। আজ শনিবার রাজধানীর কেন্দ্রীয় শহীদ মিনারে হাজার হাজার মানুষের সমাবেশে বৈষম্যবিরোধী ছাত্র আন্দোলনের পক্ষ থেকে সমন্বয়ক নাহিদ ইসলাম এ ঘোষণা দেন।বিকেল সাড়ে পাঁচটার দিকে নাহিদ ইসলাম মাইকে সমবেত মানুষের উদ্দেশে বলেন, ‘মানুষের জীবনের নিরাপত্তা ও সমাজে ন্যায়বিচার প্রতিষ্ঠার জন্য আমরা এক দফা দাবির সিদ্ধান্তে উপনীত হয়েছি। এক দফাটি হলো, প্রধানমন্ত্রী শেখ হাসিনাসহ এই সরকারের পতন ও ফ্যাসিবাদের বিলোপ।’নাহিদ আরও বলেন, ‘বৈষম্যবিরোধী ছাত্র আন্দোলন থেকে আমরা খুব দ্রুতই ছাত্র-নাগরিক অভ্যুত্থানের জন্য সর্বস্তরের নাগরিক, ছাত্রসংগঠন ও সব পেশাজীবী মানুষের সঙ্গে মিলে সম্মিলিত মোর্চা ঘোষণা করব। সবার সঙ্গে আলোচনার মাধ্যমে ভবিষ্যৎ বাংলাদেশের জাতীয় রূপরেখা আমরা সবার সামনে হাজির করব৷’',
+                time2: 'সরকার পদত্যাগের এক দফা দাবি ঘোষণা করেছে বৈষম্যবিরোধী ছাত্র আন্দোলন। আজ শনিবার রাজধানীর কেন্দ্রীয় শহীদ মিনারে হাজার হাজার মানুষের সমাবেশে বৈষম্যবিরোধী ছাত্র আন্দোলনের পক্ষ থেকে সমন্বয়ক নাহিদ ইসলাম এ ঘোষণা দেন।বিকেল সাড়ে পাঁচটার দিকে নাহিদ ইসলাম মাইকে সমবেত মানুষের উদ্দেশে বলেন, ‘মানুষের জীবনের নিরাপত্তা ও সমাজে ন্যায়বিচার প্রতিষ্ঠার জন্য আমরা এক দফা দাবির সিদ্ধান্তে উপনীত হয়েছি। এক দফাটি হলো, প্রধানমন্ত্রী শেখ হাসিনাসহ এই সরকারের পতন ও ফ্যাসিবাদের বিলোপ।’নাহিদ আরও বলেন, ‘বৈষম্যবিরোধী ছাত্র আন্দোলন থেকে আমরা খুব দ্রুতই ছাত্র-নাগরিক অভ্যুত্থানের জন্য সর্বস্তরের নাগরিক, ছাত্রসংগঠন ও সব পেশাজীবী মানুষের সঙ্গে মিলে সম্মিলিত মোর্চা ঘোষণা করব। সবার সঙ্গে আলোচনার মাধ্যমে ভবিষ্যৎ বাংলাদেশের জাতীয় রূপরেখা আমরা সবার সামনে হাজির করব৷’',
+                time3: 'সরকার পদত্যাগের এক দফা দাবি ঘোষণা করেছে বৈষম্যবিরোধী ছাত্র আন্দোলন। আজ শনিবার রাজধানীর কেন্দ্রীয় শহীদ মিনারে হাজার হাজার মানুষের সমাবেশে বৈষম্যবিরোধী ছাত্র আন্দোলনের পক্ষ থেকে সমন্বয়ক নাহিদ ইসলাম এ ঘোষণা দেন।বিকেল সাড়ে পাঁচটার দিকে নাহিদ ইসলাম মাইকে সমবেত মানুষের উদ্দেশে বলেন, ‘মানুষের জীবনের নিরাপত্তা ও সমাজে ন্যায়বিচার প্রতিষ্ঠার জন্য আমরা এক দফা দাবির সিদ্ধান্তে উপনীত হয়েছি। এক দফাটি হলো, প্রধানমন্ত্রী শেখ হাসিনাসহ এই সরকারের পতন ও ফ্যাসিবাদের বিলোপ।’নাহিদ আরও বলেন, ‘বৈষম্যবিরোধী ছাত্র আন্দোলন থেকে আমরা খুব দ্রুতই ছাত্র-নাগরিক অভ্যুত্থানের জন্য সর্বস্তরের নাগরিক, ছাত্রসংগঠন ও সব পেশাজীবী মানুষের সঙ্গে মিলে সম্মিলিত মোর্চা ঘোষণা করব। সবার সঙ্গে আলোচনার মাধ্যমে ভবিষ্যৎ বাংলাদেশের জাতীয় রূপরেখা আমরা সবার সামনে হাজির করব৷’',
+                time4: 'সরকার পদত্যাগের এক দফা দাবি ঘোষণা করেছে বৈষম্যবিরোধী ছাত্র আন্দোলন। আজ শনিবার রাজধানীর কেন্দ্রীয় শহীদ মিনারে হাজার হাজার মানুষের সমাবেশে বৈষম্যবিরোধী ছাত্র আন্দোলনের পক্ষ থেকে সমন্বয়ক নাহিদ ইসলাম এ ঘোষণা দেন।বিকেল সাড়ে পাঁচটার দিকে নাহিদ ইসলাম মাইকে সমবেত মানুষের উদ্দেশে বলেন, ‘মানুষের জীবনের নিরাপত্তা ও সমাজে ন্যায়বিচার প্রতিষ্ঠার জন্য আমরা এক দফা দাবির সিদ্ধান্তে উপনীত হয়েছি। এক দফাটি হলো, প্রধানমন্ত্রী শেখ হাসিনাসহ এই সরকারের পতন ও ফ্যাসিবাদের বিলোপ।’নাহিদ আরও বলেন, ‘বৈষম্যবিরোধী ছাত্র আন্দোলন থেকে আমরা খুব দ্রুতই ছাত্র-নাগরিক অভ্যুত্থানের জন্য সর্বস্তরের নাগরিক, ছাত্রসংগঠন ও সব পেশাজীবী মানুষের সঙ্গে মিলে সম্মিলিত মোর্চা ঘোষণা করব। সবার সঙ্গে আলোচনার মাধ্যমে ভবিষ্যৎ বাংলাদেশের জাতীয় রূপরেখা আমরা সবার সামনে হাজির করব৷’'
+            };
+
+            flashcards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const id = card.id;
+                    modal.style.display = 'flex';
+                    modalTitle.innerText = card.querySelector('h2').innerText;
+                    modalContent.innerText = details[id];
+                });
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
